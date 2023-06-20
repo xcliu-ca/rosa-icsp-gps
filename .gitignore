@@ -1,0 +1,20 @@
+terraform.tfvars
+.terraform
+
+outputs
+outputs/*
+
+*/log.txt
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
+*.tfvars
+
+# filesystem detritus
+/.project
+**/.DS_Store
+**/*.hcl
+
+node_modules
+package-lock.json

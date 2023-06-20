@@ -1,0 +1,76 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: CatalogSource
+metadata:
+  name: roks-gps-art-tag
+  namespace: openshift-marketplace
+spec:
+  displayName: CS cd-20230511-1938
+  image: docker-na-public.artifactory.swg-devops.com/hyc-cloud-private-daily-docker-local/ibmcom/ibm-common-service-catalog:cd-20230511-1938
+  publisher: IBM CS
+  sourceType: grpc
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: CatalogSource
+metadata:
+  name: roks-gps-art-sha
+  namespace: openshift-marketplace
+spec:
+  displayName: CS cd-20230511-1938
+  image: docker-na-public.artifactory.swg-devops.com/hyc-cloud-private-daily-docker-local/ibmcom/ibm-common-service-catalog@sha256:d06bd995431876d3ed1261d84d7442fc98c674028aba5be07071a7dbfe4be0b5
+  publisher: IBM CS
+  sourceType: grpc
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: CatalogSource
+metadata:
+  name: roks-icsp-icr-sha
+  namespace: openshift-marketplace
+spec:
+  displayName: CS cd-20230511-1938
+  image: icr.io/cpopen/ibm-common-service-catalog@sha256:d06bd995431876d3ed1261d84d7442fc98c674028aba5be07071a7dbfe4be0b5
+  publisher: IBM CS
+  sourceType: grpc
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: CatalogSource
+metadata:
+  name: roks-icsp-icr-tag-nouse
+  namespace: openshift-marketplace
+spec:
+  displayName: CS cd-20230511-1938
+  image: icr.io/cpopen/ibm-common-service-catalog:cd-20230511-1938
+  publisher: IBM CS
+  sourceType: grpc
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: CatalogSource
+metadata:
+  name: cpd-gps-stg-tag
+  namespace: openshift-marketplace
+spec:
+  displayName: CPD 1000
+  publisher: IBM
+  image: cp.stg.icr.io/cp/ibm-cpd-cloud-native-postgresql-operator-catalog:1000
+  sourceType: grpc
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: CatalogSource
+metadata:
+  name: cpd-icsp-stg-sha
+  namespace: openshift-marketplace
+spec:
+  displayName: CPD 1000
+  publisher: IBM
+  image: icr.io/cpopen/ibm-cpd-cloud-native-postgresql-operator-catalog@sha256:1904be02f3094fecf470ba7b6e8bfc435b620f7ed539a8772cea2f0c8a627961
+  sourceType: grpc
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: CatalogSource
+metadata:
+  name: cpd-icsp-edb-sha
+  namespace: openshift-marketplace
+spec:
+  displayName: CPD 1000
+  publisher: IBM
+  image: icr.io/cpopen/edb/ibm-cpd-cloud-native-postgresql-operator-catalog@sha256:1904be02f3094fecf470ba7b6e8bfc435b620f7ed539a8772cea2f0c8a627961
+  sourceType: grpc
