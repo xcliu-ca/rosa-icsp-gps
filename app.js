@@ -11,7 +11,7 @@ const { ref, computed, watch } = require("vue")
 // console.log(Object.keys(vmath))
 // console.log(Object.keys(execa))
 
-const backup_dockerconfig = JSON.parse(fs.readFileSync("/host/.docker/config.json.backup", "utf8"))
+const backup_dockerconfig = JSON.parse(fs.readFileSync("/host/var/lib/kubelet/config.json.backup", "utf8"))
 const backup_registries = fs.readFileSync("/host/etc/containers/registries.conf.backup", "utf8")
 const POD = os.hostname()
 
@@ -60,7 +60,7 @@ watch(version_current, () => {
     if (updates_available.value && ocp_available.value) {
       console.log(`!!!!!! ready for updating files and reboot node`)
       fs.writeFileSync("/host/version", version_current.value, "utf8")
-      fs.writeFileSync("/host/.docker/config.json", JSON.stringify({auths: Object.assign({}, backup_dockerconfig.auths, decode(gps.value).auths)},"",2), "utf8")
+      fs.writeFileSync("/host/var/lib/kubelet/config.json", JSON.stringify({auths: Object.assign({}, backup_dockerconfig.auths, decode(gps.value).auths)},"",2), "utf8")
       fs.writeFileSync("/host/etc/containers/registries.conf", backup_registries + registries.value, "utf8")
       console.log(`!!!!!! rebooting for icsp`)
       reboot().then(() => console.log(`.!. worker ${node_name.value} rebooted`).catch(e => console.error(e)))
@@ -76,7 +76,7 @@ watch(version_disk, () => {
     if (updates_available.value && ocp_available.value) {
       console.log(`!!!!!! ready for updating files and reboot node`)
       fs.writeFileSync("/host/version", version_current.value, "utf8")
-      fs.writeFileSync("/host/.docker/config.json", JSON.stringify({auths: Object.assign({}, backup_dockerconfig.auths, decode(gps.value).auths)},"",2), "utf8")
+      fs.writeFileSync("/host/var/lib/kubelet/config.json", JSON.stringify({auths: Object.assign({}, backup_dockerconfig.auths, decode(gps.value).auths)},"",2), "utf8")
       fs.writeFileSync("/host/etc/containers/registries.conf", backup_registries + registries.value, "utf8")
       // only reboot for version_current updates
     }
@@ -105,7 +105,7 @@ watch(icsp, () => {
     version_current.value = icsp.value.version
   }
 })
-watch(gps, () => fs.writeFileSync("/host/.docker/config.json", JSON.stringify({auths: Object.assign({}, backup_dockerconfig.auths, decode(gps.value).auths)},"",2), "utf8"))
+watch(gps, () => fs.writeFileSync("/host/var/lib/kubelet/config.json", JSON.stringify({auths: Object.assign({}, backup_dockerconfig.auths, decode(gps.value).auths)},"",2), "utf8"))
 watch(gps_query, () => gps.value = gps_query.value.data[".dockerconfigjson"])
 watch(icsp_query, () => {
   if (icsp_query.value.hasOwnProperty("items") && icsp_query.value.items.length > 0) {
@@ -136,7 +136,7 @@ execa.command(`oc -n kube-system get pod ${POD} -o json --insecure-skip-tls-veri
   node_name.value = JSON.parse(result.stdout).spec.nodeName
   console.log(`node_name = ${node_name.value}`)
   execa.command(`oc -n kube-system get node ${node_name.value} -o json --insecure-skip-tls-verify=true`, {shell: true}).then(r => {
-    worker_id.value = JSON.parse(r.stdout).metadata.labels["ibm-cloud.kubernetes.io/worker-id"]
+    worker_id.value = JSON.parse(r.stdout).spec.providerID.replace(/.*\/i-/, "i-")
     console.log(`worker_id = ${worker_id.value}`)
   })
 })
@@ -234,7 +234,7 @@ async function reboot() {
   console.log(chalk.green(`... rebooting`))
   try {
     await seventh.resolveTimeout(Math.floor(1000 * 60 * 3 * Math.random()))
-    const result = await execa.command(`ibmcloud cs worker reboot --worker ${worker_id.value} -c ${process.env.IBMCLOUD_CLUSTER} -f`, {shell: true})
+    const result = await execa.command(`aws ec2 reboot-instances --instance-ids ${worker_id.value} --region ${process.env.AWS_REGION}`, {shell: true})
     console.log(result.stdout)
   } catch (e) {console.log(e)}
 }

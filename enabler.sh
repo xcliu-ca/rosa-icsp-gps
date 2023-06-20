@@ -25,15 +25,15 @@ if [ -z "$JQ" ]; then
   exit
 fi
 
-export IBMCLOUD_REGION=${IBMCLOUD_REGION}
-if [ -z "$IBMCLOUD_REGION" ]; then
-  export IBMCLOUD_REGION=$($OC get nodes -o jsonpath="{.items[*].metadata.labels}" | jq | grep "ibm-cloud.kubernetes.io.region" | sort -u | sed -e 's/"//g' -e 's/,//g' | awk '{print $NF}')
-  if [ $(echo $IBMCLOUD_REGION | wc -l) -gt 2 ]; then
-    echo "!!! your worker pool seems to span in multiple regions, provide IBMCLOUD_REGION for your master pool"
+export AWS_REGION=${AWS_REGION}
+if [ -z "$AWS_REGION" ]; then
+  export AWS_REGION=$($OC get nodes -o jsonpath="{.items[*].metadata.labels}" | jq | grep "topology.kubernetes.io.region" | sort -u | sed -e 's/"//g' -e 's/,//g' | awk '{print $NF}')
+  if [ $(echo $AWS_REGION | wc -l) -gt 2 ]; then
+    echo "!!! your worker pool seems to span in multiple regions, provide AWS_REGION for your control plane"
     exit
   fi
 fi
-if [ -z "$IBMCLOUD_REGION" ]; then
+if [ -z "$AWS_REGION" ]; then
   echo "!!! can not figure out aws region, please provide AWS_REGION envirnoment"
   exit
 fi
@@ -75,12 +75,12 @@ spec:
         name: roks-icsp
         priorityClassName: openshift-user-critical
         env:
-        - name: IBMCLOUD_APIKEY
-          value: ${IBMCLOUD_APIKEY}
-        - name: IBMCLOUD_CLUSTER
-          value: ${IBMCLOUD_CLUSTER}
-        - name: IBMCLOUD_REGION
-          value: ${IBMCLOUD_REGION}
+        - name: AWS_ACCESS_KEY
+          value: ${AWS_ACCESS_KEY}
+        - name: AWS_SECRET_ACCESS_KEY
+          value: ${AWS_SECRET_ACCESS_KEY}
+        - name: AWS_REGION
+          value: ${AWS_REGION}
         volumeMounts:
         - name: host
           mountPath: /host
