@@ -122,7 +122,7 @@ spec:
 ENDF
 
 
-if $OC api-resources | grep -q machineconfigs; then
+if ! $OC api-resources | grep -q machineconfigs; then
    cat << ENDF | $OC apply -f -
 kind: CustomResourceDefinition
 apiVersion: apiextensions.k8s.io/v1
