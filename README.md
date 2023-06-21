@@ -30,3 +30,7 @@
 4. [if prompted] export your rosa cluster region information `export AWS_REGION=replace-with-cluster-region`
 5. install `daemonset` by executing [script](enabler.sh) `./enabler.sh`
 6. treat `rosa with hosted control plane` no difference with other `openshift` env
+
+## current limit
+- rosa with hosted control plane revert its default `secret/pull-secret`, so use `secret/pull-secret-hcp` for now
+- rosa with hosted control plane reverts its default `imagecontentsourcepolicy/cluster`, so create new imagecontentsourcepolicy items
