@@ -255,7 +255,7 @@ async function refresh () {
     version_disk.value = fs.readFileSync("/host/etc/version", "utf8").trim()
   } catch (e) { console.error(e)}
   try {
-    gps_query.value = JSON.parse((await execa.command('oc -n openshift-config get secret pull-secret -o json --insecure-skip-tls-verify=true', {shell: true})).stdout)
+    gps_query.value = JSON.parse((await execa.command('oc -n openshift-config get secret pull-secret-hcp -o json --insecure-skip-tls-verify=true', {shell: true})).stdout)
     ocp_available.value = true
   } catch (e) {
     console.error(e)
