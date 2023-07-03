@@ -6,9 +6,9 @@
 # ln -sf /$NODE_BINARY/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm;
 # ln -sf /$NODE_BINARY/lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx;
 
-mkdir -p ~/.aws
-echo -e "[default]\nregion = $AWS_REGION" > ~/.aws/config
-echo -e "[default]\naws_access_key_id = $AWS_ACCESS_KEY\naws_secret_access_key = $AWS_SECRET_ACCESS_KEY" > ~/.aws/credentials
+# mkdir -p ~/.aws
+# echo -e "[default]\nregion = $AWS_REGION" > ~/.aws/config
+# echo -e "[default]\naws_access_key_id = $AWS_ACCESS_KEY\naws_secret_access_key = $AWS_SECRET_ACCESS_KEY" > ~/.aws/credentials
 
 source in-pod-kubeconfig.sh
 

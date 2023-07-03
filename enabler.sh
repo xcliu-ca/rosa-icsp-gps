@@ -7,34 +7,35 @@
 #   version (icsp and global pull secret) to worker file /version
 ### to improve: rbac
 
-export AWS_ACCESS_KEY=${AWS_ACCESS_KEY}
-export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-if [ -z "$AWS_ACCESS_KEY" -o -z "$AWS_SECRET_ACCESS_KEY" ]; then
-  echo "!!! aws access and secret keys are required to enable"
-  exit
-fi
+# export AWS_ACCESS_KEY=${AWS_ACCESS_KEY}
+# export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+# if [ -z "$AWS_ACCESS_KEY" -o -z "$AWS_SECRET_ACCESS_KEY" ]; then
+#   echo "!!! aws access and secret keys are required to enable"
+#   exit
+# fi
+
+# [ -n "$JQ" ] || JQ=$(which jq)
+# if [ -z "$JQ" ]; then
+#   echo "!!! jq is required to configure"
+#   exit
+# fi
+
+# export AWS_REGION=${AWS_REGION}
+# if [ -z "$AWS_REGION" ]; then
+#   export AWS_REGION=$($OC get nodes -o jsonpath="{.items[*].metadata.labels}" | jq | grep "topology.kubernetes.io.region" | sort -u | sed -e 's/"//g' -e 's/,//g' | awk '{print $NF}')
+#   if [ $(echo $AWS_REGION | wc -l) -gt 2 ]; then
+#     echo "!!! your worker pool seems to span in multiple regions, provide AWS_REGION for your control plane"
+#     exit
+#   fi
+# fi
+# if [ -z "$AWS_REGION" ]; then
+#   echo "!!! can not figure out aws region, please provide AWS_REGION envirnoment"
+#   exit
+# fi
 
 [ -n "$OC" ] || OC=$(which oc)
-[ -n "$JQ" ] || JQ=$(which jq)
 if ! $OC get nodes 2>/dev/null; then
   echo "!!! configure your cluster access to enable"
-  exit
-fi
-if [ -z "$JQ" ]; then
-  echo "!!! jq is required to configure"
-  exit
-fi
-
-export AWS_REGION=${AWS_REGION}
-if [ -z "$AWS_REGION" ]; then
-  export AWS_REGION=$($OC get nodes -o jsonpath="{.items[*].metadata.labels}" | jq | grep "topology.kubernetes.io.region" | sort -u | sed -e 's/"//g' -e 's/,//g' | awk '{print $NF}')
-  if [ $(echo $AWS_REGION | wc -l) -gt 2 ]; then
-    echo "!!! your worker pool seems to span in multiple regions, provide AWS_REGION for your control plane"
-    exit
-  fi
-fi
-if [ -z "$AWS_REGION" ]; then
-  echo "!!! can not figure out aws region, please provide AWS_REGION envirnoment"
   exit
 fi
 
