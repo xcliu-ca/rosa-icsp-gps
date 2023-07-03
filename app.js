@@ -17,7 +17,6 @@ const POD = os.hostname()
 
 // reactive variables 
 const node_name = ref('node_name')
-const worker_id = ref('worker_id')
 const version_disk = ref('vanilla')
 const version_current = ref('vanilla')
 const icsp_query = ref({})
@@ -135,10 +134,6 @@ try {
 execa.command(`oc -n kube-system get pod ${POD} -o json --insecure-skip-tls-verify=true`, {shell: true}).then(result => {
   node_name.value = JSON.parse(result.stdout).spec.nodeName
   console.log(`node_name = ${node_name.value}`)
-  execa.command(`oc -n kube-system get node ${node_name.value} -o json --insecure-skip-tls-verify=true`, {shell: true}).then(r => {
-    worker_id.value = JSON.parse(r.stdout).spec.providerID.replace(/.*\/i-/, "i-")
-    console.log(`worker_id = ${worker_id.value}`)
-  })
 })
 status().then(() => refresh()).then(() => status())
 setInterval(refresh, 37 * 1000)
@@ -157,7 +152,6 @@ function APIError (code, message) {
   this.flag_in_sync = in_sync.value
   this.version = version_current.value
   this.node_name = node_name.value
-  this.worker_id = worker_id.value
 }
 
 const app = new Koa();
@@ -182,7 +176,6 @@ app.use(async (ctx, next) => {
       flag_in_sync: in_sync.value,
       version: version_current.value,
       node_name: node_name.value,
-      worker_id: worker_id.value
     })
   }
   try {
@@ -199,7 +192,6 @@ app.use(async (ctx, next) => {
       flag_in_sync: in_sync.value,
       version: version_current.value,
       node_name: node_name.value,
-      worker_id: worker_id.value
     }
   }
 })
@@ -234,7 +226,6 @@ async function reboot() {
   console.log(chalk.green(`... rebooting`))
   try {
     await seventh.resolveTimeout(Math.floor(1000 * 60 * 3 * Math.random()))
-    // const result = await execa.command(`aws ec2 reboot-instances --instance-ids ${worker_id.value} --region ${process.env.AWS_REGION}`, {shell: true})
     const result = await execa.command(`oc debug node/${node_name.value} -- chroot /host shutdown -r`, {shell: true})
     console.log(result.stdout)
   } catch (e) {console.log(e)}
