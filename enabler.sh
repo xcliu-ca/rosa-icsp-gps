@@ -75,13 +75,7 @@ spec:
         imagePullPolicy: Always
         name: roks-icsp
         priorityClassName: openshift-user-critical
-        env:
-        - name: AWS_ACCESS_KEY
-          value: ${AWS_ACCESS_KEY}
-        - name: AWS_SECRET_ACCESS_KEY
-          value: ${AWS_SECRET_ACCESS_KEY}
-        - name: AWS_REGION
-          value: ${AWS_REGION}
+        env: {}
         volumeMounts:
         - name: host
           mountPath: /host
