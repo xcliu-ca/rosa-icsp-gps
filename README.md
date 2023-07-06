@@ -34,4 +34,4 @@
 ## current limit
 - rosa with hosted control plane revert its default `secret/pull-secret`, so use `secret/pull-secret-hcp` for now
 - rosa with hosted control plane reverts its default `imagecontentsourcepolicy/cluster`, so create new imagecontentsourcepolicy items
-- cluster nodes should be in the same aws region (for rebooting)
+- ~~cluster nodes should be in the same aws region (for rebooting)~~
