@@ -13,6 +13,9 @@ const { ref, computed, watch } = require("vue")
 
 const backup_dockerconfig = JSON.parse(fs.readFileSync("/host/var/lib/kubelet/config.json.backup", "utf8"))
 const backup_registries = fs.readFileSync("/host/etc/containers/registries.conf.backup", "utf8")
+const file_version = "/host/etc/version"
+const file_dockerconfig = "/host/var/lib/kubelet/config.json"
+const file_registries = "/host/etc/containers/registries.conf"
 const POD = os.hostname()
 
 // reactive variables 
@@ -58,9 +61,9 @@ watch(version_current, () => {
     // should update worker files and reboot, with version in disk updated
     if (updates_available.value && ocp_available.value) {
       console.log(`!!!!!! ready for updating files and reboot node`)
-      fs.writeFileSync("/host/etc/version", version_current.value, "utf8")
-      fs.writeFileSync("/host/var/lib/kubelet/config.json", JSON.stringify({auths: Object.assign({}, backup_dockerconfig.auths, decode(gps.value).auths)},"",2), "utf8")
-      fs.writeFileSync("/host/etc/containers/registries.conf", backup_registries + registries.value, "utf8")
+      fs.writeFileSync(file_version, version_current.value, "utf8")
+      fs.writeFileSync(file_dockerconfig, JSON.stringify({auths: Object.assign({}, backup_dockerconfig.auths, decode(gps.value).auths)},"",2), "utf8")
+      fs.writeFileSync(file_registries, backup_registries + registries.value, "utf8")
       console.log(`!!!!!! rebooting for icsp`)
       reboot().then(() => console.log(`.!. worker ${node_name.value} rebooted`).catch(e => console.error(e)))
     } else {
@@ -74,9 +77,9 @@ watch(version_disk, () => {
   if (version_current.value !== version_disk.value) {
     if (updates_available.value && ocp_available.value) {
       console.log(`!!!!!! ready for updating files and reboot node`)
-      fs.writeFileSync("/host/etc/version", version_current.value, "utf8")
-      fs.writeFileSync("/host/var/lib/kubelet/config.json", JSON.stringify({auths: Object.assign({}, backup_dockerconfig.auths, decode(gps.value).auths)},"",2), "utf8")
-      fs.writeFileSync("/host/etc/containers/registries.conf", backup_registries + registries.value, "utf8")
+      fs.writeFileSync(file_version, version_current.value, "utf8")
+      fs.writeFileSync(file_dockerconfig, JSON.stringify({auths: Object.assign({}, backup_dockerconfig.auths, decode(gps.value).auths)},"",2), "utf8")
+      fs.writeFileSync(file_registries, backup_registries + registries.value, "utf8")
       // only reboot for version_current updates
     }
   }
@@ -104,7 +107,7 @@ watch(icsp, () => {
     version_current.value = icsp.value.version
   }
 })
-watch(gps, () => fs.writeFileSync("/host/var/lib/kubelet/config.json", JSON.stringify({auths: Object.assign({}, backup_dockerconfig.auths, decode(gps.value).auths)},"",2), "utf8"))
+watch(gps, () => fs.writeFileSync(file_dockerconfig, JSON.stringify({auths: Object.assign({}, backup_dockerconfig.auths, decode(gps.value).auths)},"",2), "utf8"))
 watch(gps_query, () => gps.value = gps_query.value.data[".dockerconfigjson"])
 watch(icsp_query, () => {
   if (icsp_query.value.hasOwnProperty("items") && icsp_query.value.items.length > 0) {
