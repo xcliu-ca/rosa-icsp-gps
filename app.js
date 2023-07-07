@@ -229,7 +229,7 @@ async function reboot() {
   console.log(chalk.green(`... rebooting`))
   try {
     await seventh.resolveTimeout(Math.floor(1000 * 60 * 3 * Math.random()))
-    const result = await execa.command(`oc debug node/${node_name.value} -- chroot /host shutdown -r`, {shell: true})
+    const result = await execa.command(`oc debug node/${node_name.value} --insecure-skip-tls-verify -- chroot /host shutdown -r`, {shell: true})
     console.log(result.stdout)
   } catch (e) {console.log(e)}
 }
