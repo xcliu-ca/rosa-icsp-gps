@@ -29,7 +29,7 @@ const icsp = ref({version: '', mirrors: {}})
 // global flags
 const ocp_available = ref(false) //  indicating that ocp cluster is good
 const in_sync = computed(() => version_disk.value === version_current.value)
-const icsp_available = computed(() => icsp_query.value.hasOwnProperty("items") && icsp_query.value.items.length > 0) // indicating that there are icsp to sync
+const icsp_available = computed(() => icsp_query.value.hasOwnProperty("items") && icsp_query.value.items.length > 1) // indicating that there are icsp to sync
 const gps_available = computed(() => gps_query.value.hasOwnProperty("data")) //  indicating that there are global pull secret
 const updates_available = vmath.logicAnd(icsp_available, gps_available) // indicating that there are both icsp and global pull secret to sync
 const registries = computed(() => {
@@ -110,8 +110,8 @@ watch(icsp, () => {
 watch(gps, () => fs.writeFileSync(file_dockerconfig, JSON.stringify({auths: Object.assign({}, backup_dockerconfig.auths, decode(gps.value).auths)},"",2), "utf8"))
 watch(gps_query, () => gps.value = gps_query.value.data[".dockerconfigjson"])
 watch(icsp_query, () => {
-  if (icsp_query.value.hasOwnProperty("items") && icsp_query.value.items.length > 0) {
-    icsp.value = icsp_query.value.items.map(item => ({
+  if (icsp_query.value.hasOwnProperty("items") && icsp_query.value.items.length > 1) {
+    icsp.value = icsp_query.value.items.filter(item => item.metadata.name !== 'cluster').map(item => ({
       name: item.metadata.name,
       generation: item.metadata.generation,
       resourceVersion: item.metadata.resourceVersion,
