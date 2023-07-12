@@ -40,7 +40,7 @@ const registries = computed(() => {
   location = "${source}"
   insecure = false
   blocked = false
-  mirror-by-digest-only = false
+  mirror-by-digest-only = true
   prefix = ""
 
 `
