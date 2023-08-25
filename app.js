@@ -11,6 +11,10 @@ const { ref, computed, watch } = require("vue")
 // console.log(Object.keys(vmath))
 // console.log(Object.keys(execa))
 
+const idms_supported = ref(false) //  indicating that ocp cluster is good
+try {
+  idms_supported.value = /imagedigestmirrorset/.test(execa.commandSync(`oc api-resources`, {shell: true}).stdout)
+} catch (e) {}
 const backup_dockerconfig = JSON.parse(fs.readFileSync("/host/var/lib/kubelet/config.json.backup", "utf8"))
 const backup_registries = fs.readFileSync("/host/etc/containers/registries.conf.backup", "utf8")
 const file_version = "/host/etc/version"
@@ -115,9 +119,7 @@ watch(icsp_query, () => {
       name: item.metadata.name,
       generation: item.metadata.generation,
       resourceVersion: item.metadata.resourceVersion,
-      mirrors: item.spec.repositoryDigestMirrors
-        .sort((x,y) => x.source > y.source ? 1 : -1)
-        .reduce(reduce_icsp_mirrors, {})
+      mirrors: idms_supported ? item.spec.imageDigestMirrors.sort((x,y) => x.source > y.source ? 1 : -1).reduce(reduce_icsp_mirrors, {}) : item.spec.repositoryDigestMirrors.sort((x,y) => x.source > y.source ? 1 : -1).reduce(reduce_icsp_mirrors, {})
     })).sort((x,y) => x.name > y.name ? 1 : -1)
        .reduce(reduce_icsps,{})
 
@@ -257,7 +259,7 @@ async function refresh () {
     ocp_available.value = false
   }
   try {
-    icsp_query.value = JSON.parse((await execa.command('oc get imagecontentsourcepolicy -o json --insecure-skip-tls-verify=true', {shell: true})).stdout)
+    icsp_query.value = JSON.parse((await execa.command(`oc get ${idms_supported ? "imagedigestmirrorset" : "imagecontentsourcepolicy"} -o json --insecure-skip-tls-verify=true`, {shell: true})).stdout)
     ocp_available.value = true
   } catch (e) {
     console.error(e)
