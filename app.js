@@ -119,7 +119,7 @@ watch(icsp_query, () => {
       name: item.metadata.name,
       generation: item.metadata.generation,
       resourceVersion: item.metadata.resourceVersion,
-      mirrors: idms_supported ? item.spec.imageDigestMirrors.sort((x,y) => x.source > y.source ? 1 : -1).reduce(reduce_icsp_mirrors, {}) : item.spec.repositoryDigestMirrors.sort((x,y) => x.source > y.source ? 1 : -1).reduce(reduce_icsp_mirrors, {})
+      mirrors: idms_supported.value ? item.spec.imageDigestMirrors.sort((x,y) => x.source > y.source ? 1 : -1).reduce(reduce_icsp_mirrors, {}) : item.spec.repositoryDigestMirrors.sort((x,y) => x.source > y.source ? 1 : -1).reduce(reduce_icsp_mirrors, {})
     })).sort((x,y) => x.name > y.name ? 1 : -1)
        .reduce(reduce_icsps,{})
 
@@ -259,7 +259,7 @@ async function refresh () {
     ocp_available.value = false
   }
   try {
-    icsp_query.value = JSON.parse((await execa.command(`oc get ${idms_supported ? "imagedigestmirrorset" : "imagecontentsourcepolicy"} -o json --insecure-skip-tls-verify=true`, {shell: true})).stdout)
+    icsp_query.value = JSON.parse((await execa.command(`oc get ${idms_supported.value ? "imagedigestmirrorset" : "imagecontentsourcepolicy"} -o json --insecure-skip-tls-verify=true`, {shell: true})).stdout)
     ocp_available.value = true
   } catch (e) {
     console.error(e)
