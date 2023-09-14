@@ -6,8 +6,8 @@
 - should be synced to worker:`/var/lib/kubelet/config.json`
 - worker nodes reboot needed
 
-## Image Content Source Policy is supported but does not sync to nodes
-- `oc get imagecontentsourcepolicy -o yaml` 
+## Image Content Source Policy | Image Digest Mirror Set is supported but does not sync to nodes
+- `oc get imagecontentsourcepolicy -o yaml`  | `oc get imagedigestmirrorset -o yaml`
 - should be synced to worker:`/etc/containers/registries.conf`
 - worker nodes reboot required
 
@@ -15,7 +15,7 @@
 - deploy a `deamonset` to run on worker nodes
 - the container mount worker filesystem
 - the container sychronizes Global Pull Secret to disk
-- the container sychronizes Image Content Source Policy to disk
+- the container sychronizes Image Content Source Policy | Image Digest Mirror Set to disk
 - worker reboot attempted (with aws cli)
 
 ## Benefit
@@ -33,5 +33,5 @@
 
 ## current limit
 - rosa with hosted control plane revert its default `secret/pull-secret`, so use `secret/pull-secret-hcp` for now
-- rosa with hosted control plane reverts its default `imagecontentsourcepolicy/cluster`, so create new imagecontentsourcepolicy items
+- rosa with hosted control plane reverts its default `imagecontentsourcepolicy/cluster`, so create new imagecontentsourcepolicy | imagedigestmirrorset items
 - ~~cluster nodes should be in the same aws region (for rebooting)~~
