@@ -13,7 +13,7 @@ const { ref, computed, watch } = require("vue")
 
 const idms_supported = ref(false) //  indicating that ocp cluster is good
 try {
-  idms_supported.value = /imagedigestmirrorset/.test(execa.commandSync(`oc api-resources`, {shell: true}).stdout)
+  idms_supported.value = /imagedigestmirrorset/.test(execa.commandSync(`oc api-resources --insecure-skip-tls-verify=true`, {shell: true}).stdout)
 } catch (e) {}
 const backup_dockerconfig = JSON.parse(fs.readFileSync("/host/var/lib/kubelet/config.json.backup", "utf8"))
 const backup_registries = fs.readFileSync("/host/etc/containers/registries.conf.backup", "utf8")
