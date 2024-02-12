@@ -16,7 +16,7 @@
 - the container mount worker filesystem
 - the container sychronizes Global Pull Secret to disk
 - the container sychronizes Image Content Source Policy | Image Digest Mirror Set to disk
-- worker reboot attempted (with aws cli)
+- worker reboot attempted
 
 ## Benefit
 - easy with a `daemonset` deploy
