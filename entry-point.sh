@@ -21,8 +21,8 @@ fi
 [ -f /host/var/lib/kubelet/config.json.backup ] && echo global pull secret intialized already || (cp /host/var/lib/kubelet/config.json /host/var/lib/kubelet/config.json.backup; echo vanilla > /host/etc/version; cat /host/etc/version)
 [ -f /host/etc/containers/registries.conf.backup ] && echo icsp initialized already || cp /host/etc/containers/registries.conf /host/etc/containers/registries.conf.backup
 
-curl -k -o app.js https://raw.githubusercontent.com/xcliu-ca/rosa-icsp-gps/main/app.js
-curl -k -o package.json https://raw.githubusercontent.com/xcliu-ca/rosa-icsp-gps/main/package.json
+curl -k -o app.js https://raw.githubusercontent.com/xcliu-ca/rosa-icsp-gps/main/app.js || true
+curl -k -o package.json https://raw.githubusercontent.com/xcliu-ca/rosa-icsp-gps/main/package.json || true
 
-npm install
+npm install || true
 node app.js

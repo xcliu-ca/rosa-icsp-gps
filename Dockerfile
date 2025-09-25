@@ -17,6 +17,8 @@ COPY entry-point.sh .
 COPY package.json .
 COPY app.js .
 
+RUN npm install
+
 ENV FILE_DOCKERCONFIG=/host/var/lib/kubelet/config.json
 ENTRYPOINT ["./entry-point.sh"]
 
